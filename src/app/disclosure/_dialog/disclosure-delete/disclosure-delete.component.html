@@ -1,0 +1,31 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+  <mat-card-title >
+    Delete confirmation
+  </mat-card-title>
+  <mat-card-content>
+    <app-dialog-alert></app-dialog-alert>
+    <hr/>
+    <span>Are you sure to delete PMD Person: </span>
+    <br>
+    <span style="text-align: center">{{inputData.detail.lastName}}&nbsp;{{inputData.detail.firstName}}:&nbsp;Badge:&nbsp;{{inputData.detail.badgeNumber}}--Payroll:&nbsp;{{inputData.detail.payrollNumber}}</span>
+    <br>
+    <hr>
+    <table class="full-width">
+      <tr>
+        <td style="width: 30%">
+          <button class="form-control" style="background-color:crimson;color: white;width: 80%"  (click)="delete()">
+            Confirm
+          </button>
+        </td>
+        <td style="width: 30%">
+          <button class="form-control" style="background-color: limegreen;color: white;width: 80%"  (click)="cancel()" >
+            Cancel    
+          </button>
+        </td>
+      </tr>    
+    </table>  
+
+  </mat-card-content>
+</section>
+
+

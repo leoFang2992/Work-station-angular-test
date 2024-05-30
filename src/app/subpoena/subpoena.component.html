@@ -1,0 +1,373 @@
+<section fxLayout="column" fxFlexAlign="stretch" >
+  <mat-card >
+    <mat-card-title>
+      Officer Subpoenas 
+    </mat-card-title>
+    <mat-card-content>
+      <mat-tab-group mat-align-tabs="center">
+        <mat-tab label="New Subpoena"> 
+          <form [formGroup]="submitForm">
+            <table class="full-width">
+              <tr class="inputQuery">
+                <td >
+                    <br/>
+                  <mat-form-field class="full-width">
+                    <input matInput 
+                      id="court"
+                      placeholder="Court Room" name="court" 
+                      formControlName="courtNumber"  
+                      [ngClass]="{'is-invalid': submitted && f.courtNumber.errors }" 
+                      required/>
+                      <mat-error *ngIf="submitted&&f.courtNumber.errors">{{getCourtErrorMessage()}}</mat-error>
+                  </mat-form-field>
+                </td>
+                &nbsp;&nbsp;&nbsp;
+                <td >
+                    <br/>
+                  <mat-form-field class="full-width">
+                    <input matInput
+                           [matDatepickerFilter]="myFilter" 
+                           [matDatepicker]="picker" 
+                           placeholder="Choose a date" 
+                           formControlName="subpoenaDate" 
+                           name="subpoenaDate" 
+                           [ngClass]="{'is-invalid': submitted && f.subpoenaDate.errors }" 
+                           required/>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-hint align="end" >Here's the calendar ^</mat-hint>
+                    <mat-error *ngIf="submitted&&f.subpoenaDate.errors?.required">You must enter a Date</mat-error>
+                  </mat-form-field>
+                </td>
+                &nbsp;&nbsp;&nbsp;
+                <td > 
+                    <br/>
+                  <mat-form-field class="full-width">
+                    <input matInput 
+                           atp-time-picker 
+                           placeholder="Choose a time" 
+                           formControlName="subpoenaTime" 
+                           name="subpoenaTime" 
+                           [ngClass]="{'is-invalid': submitted && f.subpoenaTime.errors }" />
+                    <mat-error *ngIf="submitted&&f.subpoenaTime.errors">{{getTimeErrorMessage()}}</mat-error>
+                  </mat-form-field>
+                </td>
+                &nbsp;&nbsp;&nbsp;
+                <td>
+                    <br/>
+                  <button class="form-control" 
+                          (click)="submitComfirmation()">Submit</button>
+                  
+                </td>
+              </tr>
+            </table>
+          <!-- <mat-error *ngIf="searched&&(f.subpoenaDate.errors||f.courtNumber.error)">Please enter court number and date before quick search!</mat-error> -->
+          <br />
+          <mat-button-toggle-group name="search" aria-label="search method">
+            <mat-button-toggle (click)="openQuickSearch()"  value="quickSearch">
+              Quick Search
+            </mat-button-toggle>
+            <mat-button-toggle (click)="openSearchDC()" value="dcSearch">
+              Search DC# 
+            </mat-button-toggle>
+            <mat-button-toggle (click)="openOfficerSearch()" value="officerSearch">
+              Search Officer 
+            </mat-button-toggle>
+            <mat-button-toggle (click)="openCreateDC()" value="dcCreate">
+              Create DC#
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+          <!-- <mat-error *ngIf="submitted&&!selectedOfficers[0]">Please select some officers before submit!</mat-error> -->
+          </form>
+          <br/>
+          <br/>
+          <div class="mat-elevation-z8" *ngIf="selectedOfficers[0]">
+            <button mat-raised-button color="primary" (click)="removeSelectedOfficers()" class="full-width">
+              Remove Selected Officers
+            </button>
+            <table mat-table [dataSource]="createDataSource" class="table table-striped" id="officerform">
+              <!-- checkbox column -->
+              <ng-container matColumnDef="Select" >
+                <mat-header-cell *matHeaderCellDef style="margin: auto;padding:24px 24px">
+                    <mat-checkbox (change)="$event ? officerMasterToggle() : null"
+                                  [checked]="selection.hasValue() && isAllOfficerSelected()"
+                                  [indeterminate]="selection.hasValue() && !isAllOfficerSelected()">
+                    </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" style="margin: auto;padding:24px 24px">
+                  <mat-checkbox (click)="$event.stopPropagation()"
+                                (change)="$event ? selection.toggle(row) : null"
+                                [checked]="selection.isSelected(row)">
+   
+                  </mat-checkbox>
+                </mat-cell>
+              </ng-container>
+              <!-- payroll column -->
+              <ng-container matColumnDef="Payroll">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Payroll</th>
+                <th mat-cell *matCellDef="let row">{{row.payrollNumber}}</th>
+              </ng-container>
+              <!-- badge column -->
+              <ng-container matColumnDef="Badge" >
+                <th mat-header-cell *matHeaderCellDef class="text-center">Badge</th>
+                <th mat-cell *matCellDef="let row">{{row.badgeNumber}}</th>
+              </ng-container>
+              <!-- officer name column -->
+              <ng-container matColumnDef="Officer">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Officer</th>
+                <th mat-cell *matCellDef="let row">{{row.poName}}</th>
+              </ng-container>
+              <!-- dc number column -->
+              <ng-container matColumnDef="DC">
+                <th mat-header-cell *matHeaderCellDef class="text-center">DC</th>
+                <th mat-cell *matCellDef="let row">{{row.dcNumber}}</th>
+              </ng-container>
+              <!-- def column -->
+              <ng-container matColumnDef="Def">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Def</th>
+                <th mat-cell *matCellDef="let row">{{row.defName}}</th>
+              </ng-container>
+              <!-- charge column -->
+              <ng-container matColumnDef="Charge">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Charge</th>
+                <th mat-cell *matCellDef="let row">{{row.policeCharge}}</th>
+              </ng-container>
+              <!-- hearing type column -->
+              <ng-container matColumnDef="Type">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Type</th>
+                <th mat-cell *matCellDef="let row">{{row.hearingTypeCode}}</th>
+              </ng-container>
+              <!-- remarks inline-edit column  -->
+              <ng-container matColumnDef="Remarks">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Remarks</th>
+                <th mat-cell *matCellDef="let row">
+                  <!-- {{row.remarks}} -->
+                  <input id="remarks"  value="{{row.remarks}}" placeholder="Add a Remarks" [(ngModel)]="row.remarks">
+                </th>
+              </ng-container>
+              <!-- trial in progress column -->
+              <ng-container matColumnDef="Trial">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Trial In Progress</th>
+                <th mat-cell *matCellDef="let row">
+                  <mat-checkbox [(ngModel)]="row.trialInProgress"></mat-checkbox>
+                </th>
+              </ng-container>              
+              <!-- cancel columen -->
+              <ng-container matColumnDef="Cancel">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Cancel</th>
+                <th mat-cell *matCellDef="let row">
+                  <mat-checkbox [(ngModel)]="row.isCancelled" ></mat-checkbox>
+                </th>
+              </ng-container>      
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr class="officerStrip" mat-row *matRowDef="let row; columns: displayedColumns;" style="color:gray;font-size: 15px"></tr>
+            </table>
+            <mat-hint *ngIf="!createDataSource">No data avaible in table</mat-hint>
+            <!-- <mat-paginator #paginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            showFirstLastButtons></mat-paginator> -->
+          </div>
+        </mat-tab>
+        <mat-tab label="Future Requests">
+          <table class="full-width"> 
+            <tr >
+              <td>
+                <button mat-icon-button (click)="futureReload()">
+                  <mat-icon aria-label="reload">refresh</mat-icon>
+                </button>
+              </td>
+              <td >
+                <mat-form-field  class="full-width" *ngIf="futureDataSource">
+                  <input matInput placeholder="Filter" id="filter" name="filter" (keyup)="applyFilter($event.target.value)">
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+          <div class="mat-elevation-z8">
+            <button mat-raised-button color="primary" (click)="removeSelectedRows()" class="full-width">
+              Remove Selected Rows
+            </button>
+            <table mat-table [dataSource]="futureDataSource" id="futureSubpoenaForm" class="table table-striped" style="overflow:auto;margin:auto">
+              <!-- checkbox column -->
+              <ng-container matColumnDef="Select">
+                <mat-header-cell *matHeaderCellDef style="margin: auto;padding:24px 24px">
+                  <mat-checkbox (change)="$event ? masterToggle() : null"
+                                [checked]="futureSelection.hasValue() && isAllSelected()"
+                                [indeterminate]="futureSelection.hasValue() && !isAllSelected()"
+                                >
+                  </mat-checkbox>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row" style="margin: auto;padding:24px 24px">
+                  <mat-checkbox (click)="$event.stopPropagation()"
+                                (change)="$event ? futureSelection.toggle(row) : null"
+                                [checked]="futureSelection.isSelected(row)"
+                                >
+                  </mat-checkbox>
+                </mat-cell>
+              </ng-container>
+              <!-- date column -->
+              <ng-container matColumnDef="Date">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">Date</th>
+                  <th mat-cell *matCellDef="let row">{{row.listingDate.slice(0,10)}}</th>
+                </ng-container>
+              <!-- payroll column -->
+              <ng-container matColumnDef="Payroll">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Payroll</th>
+                <th mat-cell *matCellDef="let row">{{row.poPayrollNumber}}</th>
+              </ng-container>
+              <!-- badge column -->
+              <ng-container matColumnDef="Badge" >
+                <th mat-header-cell *matHeaderCellDef class="text-center">Badge</th>
+                <th mat-cell *matCellDef="let row">{{row.badgeNumber}}</th>
+              </ng-container>
+              <!-- officer name column -->
+              <ng-container matColumnDef="Officer">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Officer</th>
+                <th mat-cell *matCellDef="let row">{{row.poName}}</th>
+              </ng-container>
+              <!-- dc number column -->
+              <ng-container matColumnDef="DC">
+                <th mat-header-cell *matHeaderCellDef class="text-center">DC</th>
+                <th mat-cell *matCellDef="let row">{{row.dcNumber}}</th>
+              </ng-container>
+              <!-- def column -->
+              <ng-container matColumnDef="Def">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Def</th>
+                <th mat-cell *matCellDef="let row">{{row.defName}}</th>
+              </ng-container>
+              <!-- charge column -->
+              <ng-container matColumnDef="Charge">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Charge</th>
+                <th mat-cell *matCellDef="let row">{{row.chargeDescription}}</th>
+              </ng-container>
+              <!-- hearing type column -->
+              <ng-container matColumnDef="Type">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Type</th>
+                <th mat-cell *matCellDef="let row">{{row.hearingTypeCode}}</th>
+              </ng-container>
+              <!-- remarks inline-edit column  -->
+              <ng-container matColumnDef="Remarks">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Remarks</th>
+                <th mat-cell *matCellDef="let row">
+                  {{row.remarks}}
+                </th>
+              </ng-container>
+              <!-- trial in progress column -->
+              <ng-container matColumnDef="Trial">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Trial In Progress</th>
+                <th mat-cell *matCellDef="let row">
+                  <mat-checkbox [(ngModel)]="row.trialInProgress" [disabled]="true"></mat-checkbox>
+                </th>
+              </ng-container>              
+              <!-- cancel columen -->
+              <ng-container matColumnDef="Cancel">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Cancel</th>
+                <th mat-cell *matCellDef="let row">
+                  <mat-checkbox [(ngModel)]="row.isCancelled" [disabled]="true"></mat-checkbox>
+                </th>
+              </ng-container>      
+              <tr mat-header-row *matHeaderRowDef="futureDisplayedColumns"></tr>
+              <tr class="subpoenaStrip" mat-row *matRowDef="let row; columns: futureDisplayedColumns;" (click)="futureSelection.toggle(row)"  style="color:gray;font-size: 15px"></tr>
+            </table>
+          <mat-hint *ngIf="!futureDataSource">No data avaible in table</mat-hint>
+          <mat-paginator #futurePaginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            showFirstLastButtons></mat-paginator>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Past Requests">
+          
+          <table class="full-width" > 
+            <tr >
+              <td>
+                <button mat-icon-button (click)="pastReload()">
+                  <mat-icon aria-label="reload">refresh</mat-icon>
+                </button>
+              </td>
+              <td >
+                <mat-form-field  class="full-width" *ngIf="pastDataSource">
+                  <input matInput placeholder="Filter" id="filter" name="filter" (keyup)="applyFilter($event.target.value)">
+                </mat-form-field>
+              </td>
+            </tr>
+          </table>
+          <div class="mat-elevation-z8" >
+            <table mat-table [dataSource]="pastDataSource" id="pastSubpoenaForm" class="table table-striped">
+              <!-- date column -->
+              <ng-container matColumnDef="Date">
+                  <th mat-header-cell *matHeaderCellDef class="text-center">Date</th>
+                  <th mat-cell *matCellDef="let row">{{row.listingDate.slice(0,10)}}</th>
+                </ng-container>
+              <!-- payroll column -->
+              <ng-container matColumnDef="Payroll">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Payroll</th>
+                <th mat-cell *matCellDef="let row">{{row.poPayrollNumber}}</th>
+              </ng-container>
+              <!-- badge column -->
+              <ng-container matColumnDef="Badge" >
+                <th mat-header-cell *matHeaderCellDef class="text-center">Badge</th>
+                <th mat-cell *matCellDef="let row">{{row.badgeNumber}}</th>
+              </ng-container>
+              <!-- officer name column -->
+              <ng-container matColumnDef="Officer">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Officer</th>
+                <th mat-cell *matCellDef="let row">{{row.poName}}</th>
+              </ng-container>
+              <!-- dc number column -->
+              <ng-container matColumnDef="DC">
+                <th mat-header-cell *matHeaderCellDef class="text-center">DC</th>
+                <th mat-cell *matCellDef="let row">{{row.dcNumber}}</th>
+              </ng-container>
+              <!-- def column -->
+              <ng-container matColumnDef="Def">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Def</th>
+                <th mat-cell *matCellDef="let row">{{row.defName}}</th>
+              </ng-container>
+              <!-- charge column -->
+              <ng-container matColumnDef="Charge">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Charge</th>
+                <th mat-cell *matCellDef="let row">{{row.chargeDescription}}</th>
+              </ng-container>
+              <!-- hearing type column -->
+              <ng-container matColumnDef="Type">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Type</th>
+                <th mat-cell *matCellDef="let row">{{row.hearingTypeCode}}</th>
+              </ng-container>
+              <!-- remarks inline-edit column  -->
+              <ng-container matColumnDef="Remarks">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Remarks</th>
+                <th mat-cell *matCellDef="let row">
+                  {{row.remarks}}
+                </th>
+              </ng-container>
+              <!-- trial in progress column -->
+              <ng-container matColumnDef="Trial">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Trial In Progress</th>
+                <th mat-cell *matCellDef="let row">
+                  <mat-checkbox [(ngModel)]="row.trialInProgress" [disabled]="true"></mat-checkbox>
+                </th>
+              </ng-container>              
+              <!-- cancel columen -->
+              <ng-container matColumnDef="Cancel">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Cancel</th>
+                <th mat-cell *matCellDef="let row">
+                  <mat-checkbox [(ngModel)]="row.isCancelled" [disabled]="true"></mat-checkbox>
+                </th>
+              </ng-container>      
+              <tr mat-header-row *matHeaderRowDef="pastDisplayedColumns"></tr>
+              <tr class="subpoenaStrip" mat-row *matRowDef="let row; columns: pastDisplayedColumns;" style="color:gray;font-size: 15px"></tr>
+            </table>
+          <mat-hint *ngIf="!pastDataSource">No data avaible in table</mat-hint>
+          <mat-paginator #pastPaginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            showFirstLastButtons></mat-paginator>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</section>

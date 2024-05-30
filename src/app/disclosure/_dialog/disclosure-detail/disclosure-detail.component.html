@@ -1,0 +1,90 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+    <mat-card-title >
+      {{inputData.detail.lastName}}&nbsp;{{inputData.detail.firstName}}:&nbsp;Badge:&nbsp;{{inputData.detail.badgeNumber}}--Payroll:&nbsp;{{inputData.detail.payrollNumber}}
+    </mat-card-title>
+    <mat-card-content>
+      <app-dialog-alert></app-dialog-alert>
+      <hr/>
+
+        <form>
+          <table class="full-width">
+            <!-- <tr>
+              <td>
+                  <span><b>Badge:</b>{{inputData.detail.badgeNumber}}</span>
+              </td>
+              <td>
+                <span><b>Payroll:</b>{{inputData.detail.payrollNumber}}</span>
+              </td>
+            </tr>
+            <br/> -->
+            <tr>
+              <td>
+                <span><b>Title:</b>&nbsp;{{inputData.detail.title}}</span>
+              </td>
+              <td>
+                <span><b>Squad:</b>&nbsp;{{inputData.detail.squad}}</span>
+              </td>
+              <td>
+                <span><b>District:</b>&nbsp;{{inputData.detail.district}}</span>
+              </td>
+            </tr>
+          </table>
+          <hr/>
+          <span><b>History List:</b></span>
+          <br>
+          <!-- will update after the anmation problem solved -->
+          <mat-accordion class="full-width" [@.disabled]="disableAnimation" *ngIf="historys">
+            <mat-expansion-panel *ngFor="let history of historys" [expanded]="false">
+              <mat-expansion-panel-header style="background-color:ghostwhite">
+                <mat-panel-title><span>{{history.misconductDate.slice(0,10)}}</span></mat-panel-title>
+              </mat-expansion-panel-header>
+              <br>
+              <table class="full-width">
+                <tr>
+                  <td style="width: 30%"><span>Facts:</span></td>
+                  <td style="width: 70%"><p>{{history.summaryOfFacts}}</p></td>
+                </tr>
+                <br>
+                <tr>
+                  <td style="width: 30%"><span>PBI Finding:</span></td>
+                  <td style="width: 70%"><p>{{history.pbiFinding}}</p></td>
+                </tr>
+                <br>
+                <tr>
+                  <td style="width: 30%"> <span>Penalty:</span></td>
+                  <td style="width: 70%"><p>{{history.penalty}}</p></td>
+                </tr>
+              </table>
+            </mat-expansion-panel>
+          </mat-accordion>
+          <hr/>
+          
+          <div class="mat-elevation-z8" *ngIf="inputData.detail.files?.length" >
+            <table mat-table [dataSource]="fileListDataSource" id="fileListForm" class="table table-striped" >
+            
+              <!-- file name column -->
+              <ng-container matColumnDef="FileName">
+                <th mat-header-cell *matHeaderCellDef class="text-center" style="padding: 0">FileName</th>
+                <th mat-cell *matCellDef="let row" class="text-center" style="font-size: 16px;font-weight:normal;padding:20px; ">{{row.name}}</th>
+              </ng-container>
+
+              <!-- download column -->
+              <ng-container matColumnDef="Download">
+                <th mat-header-cell *matHeaderCellDef class="text-center">Download</th>
+                <th mat-cell *matCellDef="let row" class="text-center">
+                  <button mat-icon-button (click)="downloadFile(row.name,row.path)">
+                    <mat-icon>cloud_download</mat-icon>
+                  </button>
+                </th>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="fileListDisplayedColumns"></tr>
+              <tr class="fileStrip" mat-row *matRowDef="let row; columns: fileListDisplayedColumns;" ></tr>
+            </table>
+
+          </div>
+          <!-- <mat-hint  style="color: black">No files Avaible</mat-hint> -->
+        </form>
+      
+    </mat-card-content>
+  </section>
+

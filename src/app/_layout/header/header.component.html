@@ -1,0 +1,47 @@
+<mat-toolbar color="primary" *ngIf="currentUser">
+  <div fxHide.gt-xs>
+    <button mat-icon-button (click)="onToggleSidenav()">
+        <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+  <div>
+    <a routerLink="/home" style="font-size: 25px; color: cornsilk">
+      <img src="assets/resources/districtattorneytransparent.png" class="header-icon" style="height: 50px;" >
+      DA-WorkStation</a>
+  </div>
+  <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs >
+    <ul fxLayout fxLayoutGap="15px" class="navigation-items">
+        <li>
+          <a routerLink="/subpoena">
+            <mat-icon class="icon">assignment_ind</mat-icon>
+            <span class="label">Subpoena</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/pmd">
+            <mat-icon class="icon">account_balance</mat-icon>
+            <span class="label">PMD Review</span>
+          </a>
+        </li>
+        <li [matMenuTriggerFor]="menu">
+          <button mat-icon-button ><mat-icon>settings</mat-icon></button>
+        </li>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item routerLink="/disclosureAdmin" *ngIf="currentUser.admin">Disclosure List</button>
+          <button mat-menu-item routerLink="/disclosureUser" *ngIf="!currentUser.admin">Disclosure List</button>
+          <button mat-menu-item routerLink="/arrest">Arrest Alert</button>
+          <button mat-menu-item routerLink="/officer">Officer List</button>
+          <button mat-menu-item routerLink="/charging">Charging</button>
+          <button mat-menu-item routerLink="/spoof" *ngIf="currentUser.admin">Spoof</button>
+          <button mat-menu-item routerLink="/ipadr">Ipad Mgmt</button>
+        </mat-menu>
+        <li><p class="text-light" style="margin: auto">{{currentUser.firstName}} {{currentUser.lastName}}</p></li>
+        <li>
+          <a (click)="logout()">
+            <mat-icon class="icon">input</mat-icon>
+            <span class="label">Logout</span>
+          </a>
+        </li>
+      </ul>
+  </div>
+</mat-toolbar>

@@ -1,0 +1,14 @@
+mat-card{
+    text-align: center;
+    width:40%;
+    margin: 0 auto;  
+}
+.full-width{
+    width:100%;
+}
+
+@media only screen and (max-width:650px){
+    mat-card{
+        width:70%;
+    }
+}

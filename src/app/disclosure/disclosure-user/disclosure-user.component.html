@@ -1,0 +1,83 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+  <mat-card>
+    <mat-card-title>
+     Disclosure List 
+    </mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="searchForm">
+        <table class="full-width">
+          <tr>
+            <td>
+              <mat-form-field class="full-width">
+                <input matInput 
+                  placeholder="Payroll#(s)" 
+                  id="search" 
+                  name="search"
+                  formControlName="payroll" 
+                  [ngClass]="{'is-invalid': submitted && f.payroll.errors }" 
+                  autofocus required>
+                  <mat-hint >Payrolls Number</mat-hint>
+                  <mat-error *ngIf="submitted&&f.payroll.errors">{{getPayrollErrorMessage()}}</mat-error>
+              </mat-form-field> 
+            </td>
+            <td>
+              <button mat-icon-button (click)="searchByPayroll()" >
+                <mat-icon aria-label="search">search</mat-icon>
+              </button>
+            </td>
+          </tr>
+          <br>
+          <!-- <tr>
+            <td>
+              <mat-form-field *ngIf="disclosuresListDataSource" class="full-width">
+                <input matInput placeholder="Filter" id="filter" name="filter" (keyup)="applyFilter($event.target.value)">
+              </mat-form-field> 
+            </td>
+          </tr> -->
+        </table>
+      </form>
+      <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="disclosuresListDataSource" id="disclosuresListForm" class="table table-striped">
+            <!-- payroll name column -->
+            <ng-container matColumnDef="Payroll">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black;padding: 0 12px">Payroll</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.payrollNumber}}</th>
+            </ng-container>
+            <!-- badge column -->
+            <ng-container matColumnDef="Badge">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">Badge</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.badgeNumber}}</th>
+            </ng-container>
+            <!-- title column -->
+            <ng-container matColumnDef="Title" >
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">Title</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.title}}</th>
+            </ng-container>
+            <!-- lastname column -->
+            <ng-container matColumnDef="Last Name">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">Last Name</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.lastName}}</th>
+            </ng-container>
+            <!-- firstname column -->
+            <ng-container matColumnDef="First Name">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">First Name</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.firstName}}</th>
+            </ng-container>
+            <!-- district column -->
+            <ng-container matColumnDef="District">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">District</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.district}}</th>
+            </ng-container>
+            <!-- squad column -->
+            <ng-container matColumnDef="Squad">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black;padding: 0 12px">Squad</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.squad}}</th>
+            </ng-container>
+          <tr mat-header-row *matHeaderRowDef="disclosuresListDisplayedColumns"></tr>
+          <tr class="diclosureStrip" mat-row *matRowDef="let row; columns: disclosuresListDisplayedColumns;" (click)="showDetail(row)" style="color:gray;font-size: 15px;font-weight: normal"></tr>
+        </table>
+        <mat-hint *ngIf="!disclosuresListDataSource">No data avaible in table</mat-hint>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</section>

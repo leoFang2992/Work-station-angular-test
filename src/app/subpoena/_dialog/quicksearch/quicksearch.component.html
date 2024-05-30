@@ -1,0 +1,75 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+    <mat-card-title >
+      Search Officers by Court and Date
+    </mat-card-title>
+    <mat-card-content>
+        <!-- <div class="note" > <span class="text-primary">{{tempDef}}</span>  <span class="text-success"> {{tempDC}}</span> </div> -->
+      <div class="mat-elevation-z8" >
+        <table mat-table [dataSource]="dataSource" class="table" id="officerform">
+          <!-- officer name column -->
+          <ng-container matColumnDef="Officer">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Officer </th>
+            <th mat-cell *matCellDef="let row">{{row.poName}}</th>
+          </ng-container>
+          <!-- badge column -->
+          <ng-container matColumnDef="Badge" >
+            <th mat-header-cell *matHeaderCellDef class="text-center">Badge</th>
+            <th mat-cell *matCellDef="let row">{{row.badgeNumber}}</th>
+          </ng-container>
+          <!-- payroll number column -->
+          <ng-container matColumnDef="Payroll">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Payroll</th>
+            <th mat-cell *matCellDef="let row">{{row.payrollNumber}}</th>
+          </ng-container>
+          <!-- dept name column -->
+          <ng-container matColumnDef="Dept">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Dept.</th>
+            <th mat-cell *matCellDef="let row">{{row.deptName}}</th>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr class="officerStrip" mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight':row.isSelected == true}"   (click)="choose(row)" style="color:gray;font-size: 15px"></tr>
+        </table>
+        <mat-paginator #paginator
+          showFirstLastButtons
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+      <hr />
+      <div>
+        <form>
+          <table class="full-width">
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <input matInput id="remarks" placeholder="Remarks" 
+                  name="remarks" [(ngModel)]="remarks">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td >
+                <mat-form-field class="full-width">
+                  <mat-select placeholder="Listing Type" name="hearingType" [(ngModel)]="hearingTypeCode">
+                    <mat-option value="Jury">Jury</mat-option>
+                    <mat-option value="Motion">Motion</mat-option>
+                    <mat-option value="Prelim">Prelim</mat-option>
+                    <mat-option value="Prep">Prep</mat-option>
+                    <mat-option value="Status">Status</mat-option>
+                    <mat-option value="Trial">Trial</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td colspan="2">
+                <button mat-icon-button class="form-control" [mat-dialog-close]="selectOfficers" (click)="add()" [disabled]="!hearingTypeCode||!selectOfficers">
+                  <mat-icon aria-label="add">add</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </mat-card-content>
+</section>
+
+
+

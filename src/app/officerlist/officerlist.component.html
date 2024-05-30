@@ -1,0 +1,90 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+  <mat-card > 
+    <mat-card-title >
+      Officer List
+    </mat-card-title>
+    <mat-card-content>
+      <form >
+        <table class="full-width">
+          <tr class="inputQuery">
+            <td >
+              <mat-form-field class="full-width">
+                <input matInput
+                  id="search" placeholder="Last name" 
+                  name="lastname" [(ngModel)]="lastname" autofocus>
+              </mat-form-field>
+            </td>
+            &nbsp;&nbsp;&nbsp;
+            <td colspan="2">
+              <mat-form-field class="full-width">
+                <input matInput
+                  id="search" placeholder="First name" 
+                  name="firstname" [(ngModel)]="firstname" >
+              </mat-form-field>
+            </td>
+            &nbsp;&nbsp;&nbsp;
+            <td colspan="2">
+              <mat-form-field class="full-width">
+                <input matInput
+                  id="search" placeholder="Badge" 
+                  name="badge" [(ngModel)]="badge">
+              </mat-form-field>
+            </td>
+            &nbsp;&nbsp;&nbsp;
+            <td colspan="2">
+              <button mat-icon-button class="form-control" (click)="searchby()" [disabled]="lastname==''&&firstname==''&&badge==''">
+                <mat-icon aria-label="search">search</mat-icon>
+              </button>
+            </td>
+          </tr>
+          <br/>
+        </table>
+      </form>
+   
+      <mat-form-field class="full-width" *ngIf="dataSource" appearance="outline">
+        <input matInput placeholder="Filter" id="filter" name="filter" (keyup)="applyFilter($event.target.value)" >
+      </mat-form-field>
+      <br/>
+
+      <div class="mat-elevation-z8" >
+        <table mat-table [dataSource]="dataSource" class="table table-striped" id="officerform">
+          <!-- payroll column -->
+          <ng-container matColumnDef="Payroll">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Payroll</th>
+            <th mat-cell *matCellDef="let row">{{row.payrollNumber}}</th>
+          </ng-container>
+          <!-- badge column -->
+          <ng-container matColumnDef="Badge" >
+            <th mat-header-cell *matHeaderCellDef class="text-center">Badge</th>
+            <th mat-cell *matCellDef="let row">{{row.badgeId}}</th>
+          </ng-container>
+          <!-- hob title column -->
+          <ng-container matColumnDef="Title">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Title</th>
+            <th mat-cell *matCellDef="let row">{{row.jobTitle}}</th>
+          </ng-container>
+          <!-- last name of officer column -->
+          <ng-container matColumnDef="Last">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Last Name</th>
+            <th mat-cell *matCellDef="let row">{{row.lastName}}</th>
+          </ng-container>
+          <!-- first name of officer column -->
+          <ng-container matColumnDef="First">
+            <th mat-header-cell *matHeaderCellDef class="text-center">First Name</th>
+            <th mat-cell *matCellDef="let row">{{row.firstName}}</th>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" style="color:gray;font-size: 15px"></tr>
+        </table>
+        <mat-hint *ngIf="!dataSource">No data avaible in table</mat-hint>
+        <mat-paginator #paginator
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 100]"
+          showFirstLastButtons></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</section>
+
+
+

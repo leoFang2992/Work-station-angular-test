@@ -1,0 +1,11 @@
+.full-width{
+    width:100%;
+}
+
+td{
+    margin: auto;
+}
+span{
+    font-size: 20px;
+    margin: auto;
+}

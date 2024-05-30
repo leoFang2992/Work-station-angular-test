@@ -1,0 +1,164 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+    <mat-card-title >
+      Create New DC#
+    </mat-card-title>
+    <mat-card-content>
+      <app-dialog-alert></app-dialog-alert>
+      <form [formGroup]="searchForm">
+        <table class="full-width">
+          <br />
+          <tr>
+            <td>
+              <mat-icon matTooltip="Seperate multiple payrollNumber with ;"
+                        matTooltipPosition="above"
+                        aria-label="support">
+                    error_outline
+              </mat-icon>
+            </td>            
+            <td class="full-width" >
+              <mat-form-field class="full-width">
+                <input matInput 
+                  placeholder="Payroll#(s)" 
+                  name="payrollString" 
+                  formControlName="payrollString" 
+                  [ngClass]="{'is-invalid': submitted && f.payrollString.errors }"
+                  autofocus required>
+                  <mat-hint >Seperate Payrolls with ;</mat-hint>
+                  <mat-error *ngIf="submitted&&f.payrollString.errors">{{getPayrollErrorMessage()}}</mat-error>
+              </mat-form-field>
+            </td>
+            <td>
+              <button mat-icon-button class="form-control" (click)="searchby()">
+                <mat-icon aria-label="search">search</mat-icon>
+              </button>
+            </td>
+          </tr>
+          <br/>
+        </table>
+      </form>
+      <hr />
+      <mat-hint >All officer will add to Subpoena.</mat-hint>
+      <div class="mat-elevation-z8" >
+        
+        <table mat-table [dataSource]="dataSource" class="table" id="officerform">
+          <!-- officer name column -->
+          <ng-container matColumnDef="Officer">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Officer </th>
+            <th mat-cell *matCellDef="let row">{{row.lastName}}</th>
+          </ng-container>
+          <!-- badge columen -->
+          <ng-container matColumnDef="Badge" >
+            <th mat-header-cell *matHeaderCellDef class="text-center">Badge</th>
+            <th mat-cell *matCellDef="let row">{{row.badgeId}}</th>
+          </ng-container>
+          <!-- payroll number column -->
+          <ng-container matColumnDef="Payroll">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Payroll</th>
+            <th mat-cell *matCellDef="let row">{{row.payrollNumber}}</th>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr class="officerStrip" mat-row *matRowDef="let row; columns: displayedColumns;"  style="color:gray;font-size: 15px"></tr>
+        </table>
+        <mat-paginator #paginator
+          showFirstLastButtons
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+      <hr />
+      <div *ngIf="isExpend">
+        <form [formGroup]="createForm">
+          <table class="full-width">
+            <tr>
+              <td >
+                <mat-form-field class="full-width">
+                  <input matInput
+                    placeholder="DC#" 
+                    name="dcNumber" 
+                    formControlName="dcNumber"
+                    [ngClass]="{'is-invalid': created && c.dcNumber.errors }" 
+                    required>
+                    <mat-error *ngIf="created&&c.dcNumber.errors">{{getDcErrorMessage()}}</mat-error>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td >
+                <mat-form-field class="full-width">
+                  <input matInput
+                    placeholder="PID#" 
+                    name="pidNumber" 
+                    formControlName="pidNumber"
+                    [ngClass]="{'is-invalid': created && c.pidNumber.errors }"  
+                    required>
+                    <mat-error *ngIf="created&&c.pidNumber.errors">{{getPidErrorMessage()}}</mat-error>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td >
+                <mat-form-field class="full-width">
+                  <input matInput
+                    placeholder="Defendant Last Name" 
+                    name="def" 
+                    formControlName="def"
+                    [ngClass]="{'is-invalid': created && c.def.errors }"  
+                    required>
+                    <mat-error *ngIf="created&&c.def.errors">{{getDefErrorMessage()}}</mat-error>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td >
+                <mat-form-field class="full-width">
+                  <mat-select name="caseCharge" 
+                              formControlName="caseCharge" 
+                              placeholder="Case Charge"
+                              required>
+                    <!-- <mat-option>
+                      <input matInput  type="text" (keyup)="filterCharge($event.target.value)" placeholder="Search Charge">
+                    </mat-option> -->
+                    <!-- <mat-select-filter [array]="chargeList" (filteredReturn)="filterChargeList =$event"></mat-select-filter> -->
+                    <mat-option *ngFor="let charge of chargeList" [value]="charge">
+                      {{charge}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <mat-form-field class="full-width">
+                  <input matInput id="remarks" 
+                         placeholder="Remarks" 
+                         name="remarks" 
+                         formControlName="remarks">
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td >
+                <mat-form-field class="full-width">
+                  <mat-select placeholder="Listing Type" 
+                              name="hearingType" 
+                              formControlName="hearingTypeCode" 
+                              required>
+                    <mat-option value="Jury">Jury</mat-option>
+                    <mat-option value="Motion">Motion</mat-option>
+                    <mat-option value="Prelim">Prelim</mat-option>
+                    <mat-option value="Prep">Prep</mat-option>
+                    <mat-option value="Status">Status</mat-option>
+                    <mat-option value="Trial">Trial</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <button mat-icon-button class="form-control"  (click)="add()">
+                  <mat-icon aria-label="add">add</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </mat-card-content>
+  </section>

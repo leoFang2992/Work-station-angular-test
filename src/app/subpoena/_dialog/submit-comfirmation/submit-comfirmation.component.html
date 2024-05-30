@@ -1,0 +1,43 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+    <mat-card-title >
+      Confirm Submission
+    </mat-card-title>
+    <mat-card-content>
+      <hr/>
+      <div fxFlexAlign="center">
+        <form>
+          <table class="full-width">
+            <tr>
+              <td>
+                <span>Submit Subpoean for {{count()}} Officers(s) on {{inputData.subpoenaDate}} in room {{inputData.courtNumber}} at {{inputData.subpoenaTime}} </span>
+              
+              </td>
+            </tr>
+            <br/>
+            <tr><td><span> As</span> </td></tr>
+            <br/>
+            <tr>
+              <td >
+                <mat-form-field class="full-width">
+                  <mat-select name="createAda" 
+                              [(ngModel)]="createAda" 
+                              placeholder="Create by" 
+                              required>
+                    <mat-option *ngFor="let user of userList" [value]="user">
+                      {{user.firstName}}.{{user.lastName}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <button class="form-control"  (click)="create()" [disabled]="!createAda">
+                  Submit
+                </button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+      <hr/>
+    </mat-card-content>
+  </section>

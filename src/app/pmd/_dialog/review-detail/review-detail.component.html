@@ -1,0 +1,78 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+  <mat-card-title >
+    {{inputData.detail.lastName}}&nbsp;{{inputData.detail.firstName}}
+  </mat-card-title>
+  <mat-card-content>
+    <hr/>
+    <div fxFlexAlign="center">
+      <form>
+        <table class="full-width">
+          <tr>
+            <td>
+              <span>Badge:{{inputData.detail.badgeNumber}}</span>
+            </td>
+          <!-- </tr>
+          <tr> -->
+            <td>
+              <span>Payroll:{{inputData.detail.payrollNumber}}</span>
+            </td>
+          </tr>
+          <br/>
+          <tr>
+            <td>
+              <span>Title:{{inputData.detail.title}}</span>
+            </td>
+            <td>
+              <span>Squad:{{inputData.detail.squad}}</span>
+            </td>
+            <td>
+              <span>District:{{inputData.detail.district}}</span>
+            </td>
+          </tr>
+        </table>
+        <br>
+        <mat-accordion class="full-width" [@.disabled]="disableAnimation">
+            <mat-expansion-panel *ngFor="let history of historys" [expanded]="false">
+              <mat-expansion-panel-header style="background-color:ghostwhite">
+                <mat-panel-title><span>{{history.misconductDate}}</span></mat-panel-title>
+              </mat-expansion-panel-header>
+              <br>
+              <table class="full-width">
+                <tr>
+                  <td style="width: 30%"><span>Facts:</span></td>
+                  <td style="width: 70%"><p>{{history.summaryOfFacts}}</p></td>
+                </tr>
+                <br>
+                <tr>
+                  <td style="width: 30%"><span>PBI Finding:</span></td>
+                  <td style="width: 70%"><p>{{history.pbiFinding}}</p></td>
+                </tr>
+                <br>
+                <tr>
+                  <td style="width: 30%"> <span>Penalty:</span></td>
+                  <td style="width: 70%"><p>{{history.penalty}}</p></td>
+                </tr>
+              </table>
+              <hr>
+            </mat-expansion-panel>
+          </mat-accordion>
+        <br>
+        <table class="full-width">
+          <tr>
+            <td style="width: 30%">
+              <button class="form-control" style="background-color: limegreen;color: white"  (click)="approval()" >
+                Approved
+              </button>
+            </td>
+            <td style="width: 30%">
+              <button class="form-control" style="background-color:crimson;color: white"  (click)="deny()" >
+                Deny
+              </button>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </div>
+    <hr/>
+  </mat-card-content>
+</section>

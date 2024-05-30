@@ -1,0 +1,294 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+    <mat-card-title >
+      Add PMD Officer
+      <button *ngIf="pmdOfficer"
+              mat-icon-button
+              style="flex-grow: 0;float:right;margin:0 0 8px"
+              (click)="turnOffPage()">
+      <mat-icon>clear</mat-icon>
+      </button>
+    </mat-card-title>
+    <mat-card-content>
+      <hr/>
+      
+      <form [formGroup]="addForm" >
+        <mat-card>
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="3.5%" fxLayoutAlign="center" layout-margin>
+        <!-- <div fxFlexAlign="center"> -->
+          <!-- fisrt name input field -->
+          <mat-form-field class="example-full-width" >
+            <input matInput
+                  id="first" placeholder="First Name:"
+                  name="first" 
+                  formControlName="firstName" 
+                  [ngClass]="{'is-invalid': submitted && f.firstName.errors }" 
+                  required>
+            <mat-error *ngIf="submitted&&f.firstName.errors">{{getFirstErrorMessage()}}</mat-error>
+          </mat-form-field>
+
+          <!-- last name input field -->
+          <mat-form-field class="example-full-width">
+            <input matInput
+                  id="last" placeholder="Last Name:"
+                  name="last"                     
+                  formControlName="lastName" 
+                  [ngClass]="{'is-invalid': submitted && f.lastName.errors }" 
+                  required>
+            <mat-error *ngIf="submitted&&f.lastName.errors">{{getLastErrorMessage()}}</mat-error>
+          </mat-form-field>
+
+          <!-- suffix input field -->
+          <mat-form-field class="example-full-width" fxFlex="30%">
+            <input matInput
+                  id="suffix" placeholder="Suffix:"
+                  name="suffix" formControlName="suffix">
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="3.5%" fxLayoutAlign="center" layout-margin>
+                  <!-- title input field -->
+                  <mat-form-field class="example-full-width">
+                    <input matInput
+                      id="title" placeholder="Title:"
+                      name="title" formControlName="title">
+                  </mat-form-field>
+
+                  <!-- payroll number input field -->
+                  <mat-form-field class="example-full-width">
+                    <input matInput
+                      id="payroll" placeholder="Payroll:"
+                      name="payroll" 
+                      formControlName="payroll" 
+                      [ngClass]="{'is-invalid': submitted && f.payroll.errors }" 
+                      required>
+                      <mat-error *ngIf="submitted&&f.payroll.errors">{{getPayrollErrorMessage()}}</mat-error>
+                  </mat-form-field>
+
+                  <!-- badge number input field -->
+                  <mat-form-field class="example-full-width" fxFlex="30%">
+                    <input matInput
+                      id="badge" placeholder="Badge:"
+                      name="badge" formControlName="badge">
+                  </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="3.5%" fxLayoutAlign="center" layout-margin>
+                  <!-- squad input field -->
+                  <mat-form-field class="example-full-width">
+                    <input matInput
+                      id="squad" placeholder="Squad:"
+                      name="squad" formControlName="squad">
+                  </mat-form-field>
+
+                  <!-- district input field -->
+                  <mat-form-field class="example-full-width">
+                    <input matInput
+                      id="district" placeholder="District:"
+                      name="district" formControlName="district">
+                  </mat-form-field>
+
+                  <!-- ishold select field  -->
+                  <mat-form-field class="example-full-width" fxFlex="30%">
+                    <mat-select placeholder="PMD Level:" 
+                                name="level" 
+                                formControlName="pmdLevel"
+                                required>
+                      <mat-option value=false>Impact</mat-option>
+                      <mat-option value=true>Presumption</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+        </div>
+        </mat-card>
+        <br/>
+            <!-- Start form historys array with first row must and dynamically add more -->
+            <mat-card formArrayName="pmdHistorys">
+                <mat-card-title>History</mat-card-title>
+                <br>
+                <!-- loop throught historys -->
+                <div *ngFor="let history of f.pmdHistorys.controls; let i=index">                
+                  <!-- group name in this case row index -->
+                  <div [formGroupName]="i">
+                    <mat-accordion [@.disabled]="disableAnimation">
+                        <mat-expansion-panel hideToggle [expanded]="true">
+                          <mat-expansion-panel-header style="background-color:ghostwhite">
+                            <mat-panel-title style="margin:auto;">
+                              <span>History {{i+1}}</span>
+                            </mat-panel-title>
+                            <mat-panel-description (click)="$event.stopPropagation()" style="flex-grow: 0;">
+                              <div fxLayout.xs="row">
+                                <!-- row delete button-->
+                                <button type="button" 
+                                        mat-mini-fab color="warn" 
+                                        fxFlex="nogrow"
+                                        (click)="removeHistory(i)">
+                                  <mat-icon>delete forever</mat-icon>
+                                </button>
+                              </div>
+                            </mat-panel-description>
+                          </mat-expansion-panel-header>
+                          <br>
+
+                          <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap  fxLayoutAlign="left">
+                            <!-- historys date input field -->
+                              <mat-form-field appearance="fill" class="full-width">
+                                <input matInput
+                                      [matDatepicker]="picker" 
+                                      id="date" placeholder="Choose a date" 
+                                      name="date"
+                                      formControlName="misconductDate">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                                <mat-hint align="end" >Here's the calendar ^</mat-hint>
+                                <!-- input field error -->
+                                <mat-error *ngIf="history.controls.misconductDate.invalid">
+                                    Date is required.        
+                                </mat-error>        
+                              </mat-form-field>
+                          </div>
+
+                          <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap  fxLayoutAlign="left">
+                            <!-- historys fact input field -->
+                            <mat-form-field class="full-width" appearance="fill">
+                              <textarea matInput
+                                id="fact" placeholder="Facts:"
+                                name="fact" cdkTextareaAutosize
+                                mat-autosize formControlName="summaryOfFacts"
+                                cdkAutosizeMinRows="2" 
+                                cdkAutosizeMaxRows="5" required></textarea>
+                              <!-- input field error -->
+                              <mat-error *ngIf="history.controls.summaryOfFacts.invalid">
+                                Fact is required.        
+                              </mat-error>       
+                            </mat-form-field>
+                          </div>
+
+                          <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutAlign="left">          
+                            <!-- pbiFinding input field -->
+                            <mat-form-field class="full-width" appearance="fill">
+                              <textarea matInput
+                                id="pbi" placeholder="PBI Finding:"
+                                name="pbi" cdkTextareaAutosize
+                                mat-autosize
+                                cdkAutosizeMinRows="6"
+                                cdkAutosizeMaxRows="10"
+                                formControlName="pbiFinding"></textarea> 
+                            </mat-form-field>
+                          </div>
+
+                          <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutAlign="left">  
+                            <!-- penalty input field -->
+                            <mat-form-field  class="full-width" appearance="fill"> 
+                              <textarea matInput
+                                id="penalty" placeholder="Penalty:"
+                                name="penalty" cdkTextareaAutosize
+                                mat-autosize 
+                                cdkAutosizeMinRows="2" 
+                                cdkAutosizeMaxRows="5"
+                                formControlName="penalty"></textarea>
+                            </mat-form-field>
+                          </div>
+
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                    <br>
+                  </div>
+                </div>
+                <!-- New historys button -->
+                <!-- <mat-card-actions style="margin:8px"> -->
+                  <button type="button" mat-raised-button (click)="addHistory()" style="background-color:ghostwhite ">
+                    <mat-icon>add box</mat-icon>
+                    Add new History
+                  </button>
+                <!-- test -->
+                <!-- </mat-card-actions> -->
+              </mat-card> <!-- End form historys array -->
+      
+      <br>
+      <button mat-raised-button color="primary" (click)="addPmdPerson()" class="full-width">Add</button>
+      <br>
+      <mat-hint *ngIf="submitted">You can attach files for this pmd officer after you create it!</mat-hint>
+      <br>
+      <mat-card *ngIf="submitted">
+          <mat-card-title>FileUpload List:</mat-card-title>
+          <br>
+          <mat-card-content>
+            <div *ngIf="fileListDataSource?.data?.length" >
+              <table mat-table [dataSource]="fileListDataSource" id="fileListForm" class="table table-striped" >
+                <!-- file name column -->
+                <ng-container matColumnDef="FileName">
+                  <th mat-header-cell *matHeaderCellDef class="text-center" style="padding: 0">FileName</th>
+                  <th mat-cell *matCellDef="let row" class="text-center" style="font-size: 16px;font-weight:normal;padding:20px; ">{{row.name}}</th>
+                </ng-container>
+                <!-- delete column -->
+                <ng-container matColumnDef="Delete">
+                  <th mat-header-cell *matHeaderCellDef class="text-center" style="padding: 0">Delete</th>
+                  <th mat-cell *matCellDef="let row" class="text-center">
+                    <button mat-mini-fab (click)="deleteFile(row.fileId)" color="warn">
+                      <mat-icon>delete forever</mat-icon>
+                    </button>
+                  </th>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="fileListDisplayedColumns"></tr>
+                <tr class="fileStrip" mat-row *matRowDef="let row; columns: fileListDisplayedColumns;" ></tr>
+              </table>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap  fxLayoutAlign="left">
+              <button mat-raised-button style="background-color:ghostwhite " (click)="fileUploader.click()" class="uploadButton">Attach files for PMD person</button>
+              <input  type="file" accept=".pdf" style="display:none" ng2FileSelect [uploader]="uploader" multiple #fileUploader>
+              <!-- <button mat-icon-button  type="button" 
+                      mat-mini-fab color="primary"
+                      (click)="uploader.uploadAll()" *ngIf="uploader.getNotUploadedItems().length"
+                      >
+                <mat-icon aria-label="upload">cloud_upload</mat-icon>
+              </button>
+              &nbsp;          
+              <button mat-icon-button  type="button" 
+                      mat-mini-fab color="warn" 
+                      (click)="uploader.clearQueue()" *ngIf="uploader.queue.length">
+                <mat-icon aria-label="delete">delete forever</mat-icon>
+              </button> -->
+            </div>
+            <br>
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap  fxLayoutAlign="left" *ngIf="uploader.queue[0]">        
+                  <table class="table">
+                    <thead>
+                    <tr>
+                        <th width="60%">Name</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of uploader.queue">
+                        <td><strong>{{ item?.file?.name }}</strong></td>
+                        <td nowrap >
+                            <button type="button" 
+                                    mat-mini-fab color="primary"
+                                    (click)="item.upload()" 
+                                    [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                              <mat-icon aria-label="upload">cloud_upload</mat-icon>
+                            </button>
+                            &nbsp;
+                            <button type="button" 
+                                    mat-mini-fab color="warn" 
+                                    (click)="item.remove()">
+                              <mat-icon aria-label="delete">clear</mat-icon>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutWrap  fxLayoutAlign="left" *ngIf="uploader.queue.length">
+                <button mat-flat-button class="btn btn-s" color="primary"
+                        (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+                    <span class="glyphicon glyphicon-upload"></span> Upload all
+                </button>
+                <button mat-flat-button class="btn btn-s" color="warn"
+                        (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                    <span class="glyphicon glyphicon-trash"></span> Cancel all
+                </button>
+            </div>
+          </mat-card-content>
+        </mat-card>     
+    </form>  
+  </mat-card-content>
+</section>
+

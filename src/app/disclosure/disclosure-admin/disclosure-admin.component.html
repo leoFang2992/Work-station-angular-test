@@ -1,0 +1,99 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+    <mat-card>
+      <mat-card-title>
+       Disclosure List 
+      </mat-card-title>
+      <mat-card-content>
+        <table class="full-width">
+          <tr>
+            <td style="text-align: left" >
+              <mat-button-toggle-group name="add" aria-label="add method" style="width:40%">
+                <mat-button-toggle (click)="reload()" value="reload" style="width:50%">Reload</mat-button-toggle>
+                <mat-button-toggle (click)="add()" value="add" style="width:50%">Add</mat-button-toggle>
+              </mat-button-toggle-group>
+            </td>
+            <!-- <td>
+              <button mat-icon-button (click)="reload()">
+                <mat-icon aria-label="reload">refresh</mat-icon>
+              </button>
+            </td>
+            <td>
+              <button mat-icon-button (click)="add()">
+                <mat-icon aria-label="add">add</mat-icon>
+              </button>
+            </td> -->
+            <td style="text-align: right;width:30%">
+              <br>
+              <mat-form-field *ngIf="disclosuresListDataSource" class="full-width" appearance="outline">
+                <input matInput placeholder="Filter" id="filter" name="filter" (keyup)="applyFilter($event.target.value)" [(ngModel)]="filter">
+              </mat-form-field> 
+            </td>
+          </tr>
+        </table>
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="disclosuresListDataSource" id="disclosuresListForm" class="table table-striped">
+            <!-- payroll name column -->
+            <ng-container matColumnDef="Payroll">
+                <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black;padding:0 12px">Payroll</th>
+                <th mat-cell *matCellDef="let row" class="font-normal">{{row.payrollNumber}}</th>
+              </ng-container>
+            <!-- badge column -->
+            <ng-container matColumnDef="Badge">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">Badge</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.badgeNumber}}</th>
+            </ng-container>
+            <!-- title column -->
+            <ng-container matColumnDef="Title" >
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">Title</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.title}}</th>
+            </ng-container>
+            <!-- lastname column -->
+            <ng-container matColumnDef="Last Name">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">Last Name</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.lastName}}</th>
+            </ng-container>
+            <!-- firstname column -->
+            <ng-container matColumnDef="First Name">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">First Name</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.firstName}}</th>
+            </ng-container>
+            <!-- district column -->
+            <ng-container matColumnDef="District">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">District</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.district}}</th>
+            </ng-container>
+            <!-- squad column -->
+            <ng-container matColumnDef="Squad">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black">Squad</th>
+              <th mat-cell *matCellDef="let row" class="font-normal">{{row.squad}}</th>
+            </ng-container>
+            <!-- edit column -->
+            <ng-container matColumnDef="Edit">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black;padding: 0 12px">Edit</th>
+              <th mat-cell *matCellDef="let row"  (click)="$event.stopPropagation()" class="font-normal" style="padding: 5px 12px">
+                <button mat-mini-fab color="primary" (click)="edit(row)">
+                  <mat-icon aria-label="update" style="color:white" >edit</mat-icon>
+                </button>
+              </th>
+            </ng-container>
+            <!-- delete column -->
+            <ng-container matColumnDef="Delete">
+              <th mat-header-cell *matHeaderCellDef class="text-center" style="color: black;padding: 0 12px">Delete</th>
+              <th mat-cell *matCellDef="let row"  (click)="$event.stopPropagation()" class="font-normal" style="padding: 5px 12px">
+                <button mat-mini-fab color="warn" (click)="delete(row)">
+                  <mat-icon aria-label="delete" style="color:white" >delete forever</mat-icon>
+                </button>
+              </th>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="disclosuresListDisplayedColumns" ></tr>
+            <tr class="diclosureStrip" mat-row *matRowDef="let row; columns: disclosuresListDisplayedColumns;" (click)="showDetail(row)" ></tr>
+          </table>
+          <mat-hint *ngIf="!disclosuresListDataSource">No data avaible in table</mat-hint>
+          <mat-paginator #disclosuresListPaginator
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100]"
+            showFirstLastButtons></mat-paginator>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </section>

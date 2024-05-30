@@ -1,0 +1,197 @@
+<section fxLayout="column" fxFlexAlign="stretch">
+  <mat-card>
+    <mat-card-title>
+     PMD Review 
+    </mat-card-title>
+    <mat-card-content>
+      <mat-tab-group mat-align-tabs="center">
+        <mat-tab label="Your Disclosures"> 
+            <table class="full-width"> 
+                <tr>
+                  <td>
+                    <button mat-icon-button (click)="userDisclosuresReload()">
+                      <mat-icon aria-label="reload">refresh</mat-icon>
+                    </button>
+                  </td>
+                  <td >
+                    <mat-form-field *ngIf="userDisclosuresDataSource" class="full-width">
+                      <input matInput placeholder="Filter" id="filter" name="filter" (keyup)="applyFilter($event.target.value)">
+                    </mat-form-field>
+                  </td>
+                </tr>
+              </table>
+              <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="userDisclosuresDataSource" id="userDisclosuresSubpoenaForm" class="table table-striped">
+                  <!-- officer name column -->
+                  <ng-container matColumnDef="Officer">
+                      <th mat-header-cell *matHeaderCellDef class="text-center">Officer</th>
+                      <th mat-cell *matCellDef="let row">{{row.poName}}</th>
+                    </ng-container>
+                  <!-- dc number column -->
+                  <ng-container matColumnDef="DC">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">DC</th>
+                    <th mat-cell *matCellDef="let row">{{row.dcNumber}}</th>
+                  </ng-container>
+                  <!-- def name column -->
+                  <ng-container matColumnDef="Def" >
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Def</th>
+                    <th mat-cell *matCellDef="let row">{{row.defName}}</th>
+                  </ng-container>
+                  <!-- court number column -->
+                  <ng-container matColumnDef="Court Room">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Court Room</th>
+                    <th mat-cell *matCellDef="let row">{{row.courtRoomNumber}}</th>
+                  </ng-container>
+                  <!-- listing date column -->
+                  <ng-container matColumnDef="Listing Date">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Listing Date</th>
+                    <th mat-cell *matCellDef="let row">{{row.listingDate.slice(0,10)}}</th>
+                  </ng-container>
+                  <!-- squad column -->
+                  <!-- <ng-container matColumnDef="Squad">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Squad</th>
+                    <th mat-cell *matCellDef="let row">{{row.chargeDescription}}</th>
+                  </ng-container> -->
+                  <!-- status column -->
+                  <ng-container matColumnDef="Status">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Status</th>
+                    <th mat-cell *matCellDef="let row" [ngStyle]="{'color':row.isPmdApproved === true?'green':row.isPmdApproved === false?'red':'black' }"  >{{statusDetection(row)}}</th>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="userDisclosuresDisplayedColumns"></tr>
+                  <tr class="pmdStrip" mat-row *matRowDef="let row; columns: userDisclosuresDisplayedColumns;" style="color:gray;font-size: 15px"></tr>
+                </table>
+                <mat-hint *ngIf="!userDisclosuresDataSource">No data avaible in table</mat-hint>
+                <mat-paginator #userDisclosuresPaginator
+                  [pageSize]="10"
+                  [pageSizeOptions]="[5, 10, 25, 100]"
+                  showFirstLastButtons></mat-paginator>
+              </div>
+        </mat-tab>
+        <mat-tab label="To be Discussed" *ngIf="currentUser.admin">
+            <table class="full-width"> 
+                <tr>
+                  <td>
+                    <button mat-icon-button (click)="discussDisclosuresReload()">
+                      <mat-icon aria-label="reload">refresh</mat-icon>
+                    </button>
+                  </td>
+                  <td >
+                    <mat-form-field *ngIf="discussDisclosuresDataSource" class="full-width">
+                      <input matInput placeholder="Filter" id="filter" name="filter" (keyup)="applyDiscussFilter($event.target.value)">
+                    </mat-form-field>
+                  </td>
+                </tr>
+              </table>
+              <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="discussDisclosuresDataSource" id="discussDisclosuresSubpoenaForm" class="table table-striped">
+                  <!-- officer name column -->
+                  <ng-container matColumnDef="Officer">
+                      <th mat-header-cell *matHeaderCellDef class="text-center">Officer</th>
+                      <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.poName}}</th>
+                    </ng-container>
+                  <!-- dc number column -->
+                  <ng-container matColumnDef="DC">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">DC</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.dcNumber}}</th>
+                  </ng-container>
+                  <!-- def name column -->
+                  <ng-container matColumnDef="Def" >
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Def</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.defName}}</th>
+                  </ng-container>
+                  <!-- court number column -->
+                  <ng-container matColumnDef="Court Room">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Court Room</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.courtRoomNumber}}</th>
+                  </ng-container>
+                  <!-- listing date column -->
+                  <ng-container matColumnDef="Listing Date">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Listing Date</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.listingDate.slice(0,10)}}</th>
+                  </ng-container>
+                  <!-- squad column -->
+                  <!-- <ng-container matColumnDef="Squad">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Squad</th>
+                    <th mat-cell *matCellDef="let row">{{row.chargeDescription}}</th>
+                  </ng-container> -->
+                  <!-- status column -->
+                  <ng-container matColumnDef="ADA">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">ADA</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.policeWitness.createdBy}}</th>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="discussDisclosuresDisplayedColumns"></tr>
+                  <tr class="pmdStrip" mat-row *matRowDef="let row; columns: discussDisclosuresDisplayedColumns;" (click)="showDiscussDetail(row)" style="color:gray;font-size: 15px"></tr>
+                </table>
+                <mat-hint *ngIf="!discussDisclosuresDataSource">No data avaible in table</mat-hint>
+                <mat-paginator #discussDisclosuresPaginator
+                  [pageSize]="10"
+                  [pageSizeOptions]="[5, 10, 25, 100]"
+                  showFirstLastButtons></mat-paginator>
+              </div>
+          </mat-tab>
+          <mat-tab label="DA Approval" *ngIf="currentUser.admin">
+              <table class="full-width"> 
+                  <tr>
+                    <td>
+                      <button mat-icon-button (click)="reviewDisclosuresReload()">
+                        <mat-icon aria-label="reload">refresh</mat-icon>
+                      </button>
+                    </td>
+                    <td >
+                      <mat-form-field *ngIf="reviewDisclosuresDataSource" class="full-width">
+                        <input matInput placeholder="Filter" id="filter" name="filter" (keyup)="applyReviewFilter($event.target.value)">
+                      </mat-form-field>
+                    </td>
+                  </tr>
+                </table>
+                <div class="mat-elevation-z8">
+                  <table mat-table [dataSource]="reviewDisclosuresDataSource" id="reviewDisclosuresSubpoenaForm" class="table table-striped">
+                  <!-- officer name column -->
+                  <ng-container matColumnDef="Officer">
+                      <th mat-header-cell *matHeaderCellDef class="text-center">Officer</th>
+                      <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.poName}}</th>
+                    </ng-container>
+                  <!-- dc number column -->
+                  <ng-container matColumnDef="DC">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">DC</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.dcNumber}}</th>
+                  </ng-container>
+                  <!-- def name column -->
+                  <ng-container matColumnDef="Def" >
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Def</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.defName}}</th>
+                  </ng-container>
+                  <!-- court number column -->
+                  <ng-container matColumnDef="Court Room">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Court Room</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.courtRoomNumber}}</th>
+                  </ng-container>
+                  <!-- listing date column -->
+                  <ng-container matColumnDef="Listing Date">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Listing Date</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.listingDate.slice(0,10)}}</th>
+                  </ng-container>
+                  <!-- squad column -->
+                  <!-- <ng-container matColumnDef="Squad">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">Squad</th>
+                    <th mat-cell *matCellDef="let row">{{row.chargeDescription}}</th>
+                  </ng-container> -->
+                  <!-- status column -->
+                  <ng-container matColumnDef="ADA">
+                    <th mat-header-cell *matHeaderCellDef class="text-center">ADA</th>
+                    <th mat-cell *matCellDef="let row">{{row.subpoenaRequest.policeWitness.createdBy}}</th>
+                  </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="reviewDisclosuresDisplayedColumns"></tr>
+                    <tr class="pmdStrip" mat-row *matRowDef="let row; columns: reviewDisclosuresDisplayedColumns;" (click)="showReviewDetail(row)"  style="color:gray;font-size: 15px"></tr>
+                  </table>
+                  <mat-hint *ngIf="!reviewDisclosuresDataSource">No data avaible in table</mat-hint>
+                  <mat-paginator #reviewDisclosuresPaginator
+                    [pageSize]="10"
+                    [pageSizeOptions]="[5, 10, 25, 100]"
+                    showFirstLastButtons></mat-paginator>
+                </div>
+            </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</section>

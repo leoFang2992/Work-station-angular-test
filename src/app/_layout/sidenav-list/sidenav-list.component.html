@@ -1,0 +1,28 @@
+<mat-nav-list>
+    <!-- <a mat-list-item routerLink="/home" (click)="onSidenavClose()">
+      <mat-icon>home</mat-icon> <span class="nav-caption">Home</span>
+    </a> -->
+    <a mat-list-item routerLink="/subpoena" (click)="onSidenavClose()">
+      <mat-icon>assignment_ind</mat-icon> <span class="nav-caption">Subpoena</span>
+    </a>
+    <a mat-list-item routerLink="/pmd" (click)="onSidenavClose()">
+      <mat-icon>account_balance</mat-icon><span class="nav-caption">PMD Review</span>
+    </a>
+    <mat-list-item [matMenuTriggerFor]="menu">
+      <mat-icon>settings</mat-icon>
+      <span class="nav-caption"> more</span>
+    </mat-list-item>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="onSidenavClose()" routerLink="/disclosureAdmin" *ngIf="isAdmin">Disclosure List</button>
+      <button mat-menu-item (click)="onSidenavClose()" routerLink="/disclosureUser" *ngIf="!isAdmin">Disclosure List</button>
+      <button mat-menu-item (click)="onSidenavClose()" routerLink="/arrest">Arrest Alert</button>
+      <button mat-menu-item (click)="onSidenavClose()" routerLink="/officer">Officer List</button>
+      <button mat-menu-item (click)="onSidenavClose()" routerLink="/charging">Charging</button>
+      <button mat-menu-item (click)="onSidenavClose()" routerLink="/spoof" *ngIf="isAdmin">Spoof</button>
+      <button mat-menu-item (click)="onSidenavClose()" routerLink="/ipadr">Ipad Mgmt</button>
+    </mat-menu>
+    <a mat-list-item  (click)="logout()">
+      <mat-icon>input</mat-icon>
+      <span class="nav-caption" >Logout</span>
+    </a>
+  </mat-nav-list>

@@ -1,0 +1,37 @@
+section mat-card mat-card-title{
+    color: #3f51b5;
+    font-size: 40px;
+    margin: 30px 0;
+}
+
+section mat-card +mat-card-title{
+    color: #3f51b5;
+    font-weight: bold;
+    font-size: 20px;
+    padding-bottom: 20px;
+}
+
+mat-card{
+    text-align: center;  
+}
+
+.mat-row:hover{
+    background-color:gainsboro
+}
+.full-width{
+    width:100%;
+}
+
+#officerform td,th{
+    text-align: center;
+}
+.inputQuery{
+    flex-direction: row;
+}
+
+@media only screen and (max-width:650px){
+    .inputQuery{
+        display: flex;
+        flex-direction: column;
+    }
+}
